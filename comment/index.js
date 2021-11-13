@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const crypto = require("crypto");
 
 const app = express();
@@ -6,10 +7,14 @@ const app = express();
 // Body Parser
 app.use(express.json());
 
+// CORS enabled
+app.use(cors());
+
 // Data
 /** Format
  * {
- *      postId: {id:commentId, comment: content of comment}
+ *      postId: [{id:commentId, comment: content of comment},
+ *                   {id:commentId, comment: content of comment}]]
  * }
  *
  */
@@ -19,10 +24,14 @@ let comments = {};
 
 app.post("/posts/:postId/comments", (req, res) => {
   const commentId = crypto.randomBytes(4).toString("hex"); //Generate random Id
-  comments[req.params.postId] = {
+  console.log(req.params.postId);
+  const commentsArr = comments[req.params.postId] || [];
+  commentsArr.push({
     id: commentId,
-    post: req.body.content,
-  };
+    comment: req.body.content,
+  });
+
+  comments[req.params.postId] = commentsArr;
 
   res.status(201).send({
     success: true,
@@ -30,9 +39,10 @@ app.post("/posts/:postId/comments", (req, res) => {
 });
 
 app.get("/posts/:postId/comments", (req, res) => {
+  const specificComments = comments[req.params.postId] || [];
   res.status(200).send({
     success: true,
-    data: comments,
+    data: specificComments,
   });
 });
 

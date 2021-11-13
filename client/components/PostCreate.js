@@ -1,16 +1,27 @@
+import { useState } from "react";
+import axios from "axios";
+
 const PostCreate = () => {
   const [postTitle, setPostTitle] = useState("");
 
-  const sendData = (e) => {};
+  const sendData = (e) => {
+    axios
+      .post("http://localhost:4001/posts", {
+        content: postTitle,
+      })
+      .catch((err) => console.log(err));
+    setPostTitle("");
+  };
 
   return (
     <div>
       <h3>Create Post</h3>
       <div className="flex-col">
-        <label for="createpost">Title</label>
+        <label htmlFor="createpost">Title</label>
         <input
           type="text"
           id="createpost"
+          value={postTitle}
           onChange={(e) => setPostTitle(e.target.value)}
         />
         <button onClick={sendData}>Submit</button>

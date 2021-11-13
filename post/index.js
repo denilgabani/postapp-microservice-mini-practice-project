@@ -1,10 +1,14 @@
 const express = require("express");
 const crypto = require("crypto");
+const cors = require("cors");
 
 const app = express();
 
 // Body Parser
 app.use(express.json());
+
+// CORS enabled
+app.use(cors());
 
 // Data
 /** Format
@@ -23,6 +27,8 @@ app.post("/posts", (req, res) => {
     id: postId,
     post: req.body.content,
   };
+
+  console.log(posts);
 
   res.status(201).send({
     success: true,
