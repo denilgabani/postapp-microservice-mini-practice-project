@@ -11,24 +11,52 @@ app.use(cors());
 
 // Data
 /** Format
- * [
+ * {postId:
  * {
  *  id: postId,
  * title: post,
  * comments: [
  * {
  * id: commentId,
- * comment: comment
+ * comments: comment
  * }
  * ],
  *
  * }
- * ]
+ * }
  *
  */
-let posts = [];
+let posts = {};
 
 // Routes
+
+app.get("/posts", (req, res) => {
+  console.log(posts);
+  res.status(200).send({
+    success: true,
+    data: posts,
+  });
+});
+
+app.post("/events", (req, res) => {
+  const { type, data } = req.body;
+
+  if (type === "PostCreated") {
+    const { id, title } = data;
+    posts[id] = {
+      id,
+      title,
+      comments: [],
+    };
+  } else if (type === "CommentCreated") {
+    const { postId, id, comment } = data;
+    posts[postId].comments.push({ id, comment });
+  }
+
+  res.status(201).send({
+    success: true,
+  });
+});
 
 // Port
 const port = 4003;

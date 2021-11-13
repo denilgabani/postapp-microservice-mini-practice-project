@@ -1,6 +1,7 @@
 const express = require("express");
 const crypto = require("crypto");
 const cors = require("cors");
+const { default: axios } = require("axios");
 
 const app = express();
 
@@ -28,7 +29,12 @@ app.post("/posts", (req, res) => {
     post: req.body.content,
   };
 
-  console.log(posts);
+  axios
+    .post("http://localhost:4005/events", {
+      type: "PostCreated",
+      data: { id: postId, title: req.body.content },
+    })
+    .catch((err) => console.log(err));
 
   res.status(201).send({
     success: true,
@@ -39,6 +45,13 @@ app.get("/posts", (req, res) => {
   res.status(200).send({
     success: true,
     data: posts,
+  });
+});
+
+app.post("/events", (req, res) => {
+  console.log(`Event Received: ${req.body.type}`);
+  res.status(200).send({
+    success: true,
   });
 });
 

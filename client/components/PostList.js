@@ -8,7 +8,7 @@ const PostList = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4001/posts")
+      .get("http://localhost:4003/posts")
       .then((res) => setPosts(res.data.data))
       .catch((err) => console.log(err));
   }, []);
@@ -18,9 +18,9 @@ const PostList = () => {
         console.log(posts);
         return (
           <div className="card" key={postId}>
-            <h3>{posts[postId].post}</h3>
+            <h3>{posts[postId].title}</h3>
             <ul>
-              <CommentList postId={postId} />
+              <CommentList comments={posts[postId].comments} />
             </ul>
             <CommentCreate postId={postId} />
           </div>
