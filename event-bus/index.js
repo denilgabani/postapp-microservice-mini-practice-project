@@ -12,10 +12,18 @@ app.use(express.json());
 app.post("/events", (req, res) => {
   const { type, data } = req.body;
 
-  axios.post("http://localhost:4001/events", { type, data });
-  axios.post("http://localhost:4002/events", { type, data });
-  axios.post("http://localhost:4003/events", { type, data });
-  axios.post("http://localhost:4004/events", { type, data });
+  axios
+    .post("http://localhost:4001/events", { type, data })
+    .catch((err) => console.error(err));
+  axios
+    .post("http://localhost:4002/events", { type, data })
+    .catch((err) => console.error(err));
+  axios
+    .post("http://localhost:4003/events", { type, data })
+    .catch((err) => console.error(err));
+  axios
+    .post("http://localhost:4004/events", { type, data })
+    .catch((err) => console.error(err));
 
   res.status(200).send({
     success: true,

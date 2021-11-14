@@ -5,7 +5,14 @@ const CommentList = ({ comments }) => {
   return (
     <>
       {comments.map((commentObj) => {
-        return <li key={commentObj.id}> {commentObj.comment}</li>;
+        let content;
+
+        if (commentObj.status === "approved") content = commentObj.comment;
+        else if (commentObj.status === "pending")
+          content = "Comment is awaiting for moderation";
+        else if (commentObj.status === "blocked")
+          content = "Comment is blocked";
+        return <li key={commentObj.id}> {content}</li>;
       })}
     </>
   );

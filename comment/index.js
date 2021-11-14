@@ -14,33 +14,39 @@ app.use(cors());
 // Data
 /** Format
  * {
- *      postId: [{id:commentId, comment: content of comment},
- *                   {id:commentId, comment: content of comment}]]
+ *      postId: [{id:commentId, comment: content of comment, status: 'pending'},
+ *                   {id:commentId, comment: content of comment, status: 'pending'}]]
  * }
  *
  */
-let comments = {};
+let commentsByPostId = {};
 
 // Routes
 
 app.post("/posts/:postId/comments", (req, res) => {
   const commentId = crypto.randomBytes(4).toString("hex"); //Generate random Id
-  console.log(req.params.postId);
-  const commentsArr = comments[req.params.postId] || [];
+
+  const postId = req.params.postId;
+  const comment = req.body.content;
+  const commentsArr = commentsByPostId[postId] || [];
+  const status = "pending";
+
   commentsArr.push({
     id: commentId,
-    comment: req.body.content,
+    comment,
+    status,
   });
 
-  comments[req.params.postId] = commentsArr;
+  commentsByPostId[postId] = commentsArr;
 
   axios
     .post("http://localhost:4005/events", {
       type: "CommentCreated",
       data: {
-        postId: req.params.postId,
+        postId,
         id: commentId,
-        comment: req.body.content,
+        comment,
+        status,
       },
     })
     .catch((err) => console.log(err));
@@ -51,7 +57,8 @@ app.post("/posts/:postId/comments", (req, res) => {
 });
 
 app.get("/posts/:postId/comments", (req, res) => {
-  const specificComments = comments[req.params.postId] || [];
+  const specificComments = commentsByPostId[req.params.postId] || [];
+
   res.status(200).send({
     success: true,
     data: specificComments,
@@ -60,6 +67,33 @@ app.get("/posts/:postId/comments", (req, res) => {
 
 app.post("/events", (req, res) => {
   console.log(`Event Received: ${req.body.type}`);
+
+  const { type, data } = req.body;
+
+  if (type === "CommentModerated") {
+    const { postId, id, comment, status } = data;
+
+    const comments = commentsByPostId[postId];
+    const matchedComment = comments.find((comment) => {
+      return comment.id === id;
+    });
+
+    matchedComment.status = status;
+    matchedComment.comment = comment;
+
+    axios
+      .post("http://localhost:4005/events", {
+        type: "CommentUpdated",
+        data: {
+          postId,
+          id,
+          comment,
+          status,
+        },
+      })
+      .catch((err) => console.error(err));
+  }
+
   res.status(200).send({
     success: true,
   });

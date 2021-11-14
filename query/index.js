@@ -18,7 +18,8 @@ app.use(cors());
  * comments: [
  * {
  * id: commentId,
- * comments: comment
+ * comments: comment,
+ * status: status of comment
  * }
  * ],
  *
@@ -49,8 +50,18 @@ app.post("/events", (req, res) => {
       comments: [],
     };
   } else if (type === "CommentCreated") {
-    const { postId, id, comment } = data;
-    posts[postId].comments.push({ id, comment });
+    const { postId, id, comment, status } = data;
+    posts[postId].comments.push({ id, comment, status });
+  } else if (type === "CommentUpdated") {
+    const { postId, id, comment, status } = data;
+    const comments = posts[postId].comments;
+
+    const matchedComment = comments.find((comment) => {
+      return comment.id === id;
+    });
+
+    matchedComment.status = status;
+    matchedComment.comment = comment;
   }
 
   res.status(201).send({
