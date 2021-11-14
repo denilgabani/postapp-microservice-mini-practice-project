@@ -7,10 +7,9 @@ const app = express();
 // Body Parser middleware
 app.use(express.json());
 
-// Routes
-app.post("/events", (req, res) => {
-  const { type, data } = req.body;
+// eventHandler
 
+const handleEvent = (type, data) => {
   if (type === "CommentCreated") {
     const { postId, id, comment } = data;
 
@@ -40,9 +39,29 @@ app.post("/events", (req, res) => {
       })
       .catch((err) => console.error(err));
   }
+};
+
+// Routes
+app.post("/events", (req, res) => {
+  const { type, data } = req.body;
+
+  handleEvent(type, data);
   res.status(200).send({});
 });
 
 // Listening on Port
 const port = 4004;
-app.listen(port, () => console.log(`Server is listening on ${port}`));
+app.listen(port, async () => {
+  console.log(`Server is listening on ${port}`);
+
+  try {
+    const res = await axios.get("http://localhost:4005/events");
+
+    for (let event of res.data) {
+      console.log("Processing Event: ", event.type);
+      handleEvent(event.type, event.data);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+});

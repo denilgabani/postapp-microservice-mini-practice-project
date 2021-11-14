@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const axios = require("axios");
 
 const app = express();
 
@@ -29,19 +30,8 @@ app.use(cors());
  */
 let posts = {};
 
-// Routes
-
-app.get("/posts", (req, res) => {
-  console.log(posts);
-  res.status(200).send({
-    success: true,
-    data: posts,
-  });
-});
-
-app.post("/events", (req, res) => {
-  const { type, data } = req.body;
-
+// helper function
+const handleEvent = (type, data) => {
   if (type === "PostCreated") {
     const { id, title } = data;
     posts[id] = {
@@ -51,6 +41,7 @@ app.post("/events", (req, res) => {
     };
   } else if (type === "CommentCreated") {
     const { postId, id, comment, status } = data;
+
     posts[postId].comments.push({ id, comment, status });
   } else if (type === "CommentUpdated") {
     const { postId, id, comment, status } = data;
@@ -63,6 +54,21 @@ app.post("/events", (req, res) => {
     matchedComment.status = status;
     matchedComment.comment = comment;
   }
+};
+
+// Routes
+
+app.get("/posts", (req, res) => {
+  res.status(200).send({
+    success: true,
+    data: posts,
+  });
+});
+
+app.post("/events", (req, res) => {
+  const { type, data } = req.body;
+
+  handleEvent(type, data);
 
   res.status(201).send({
     success: true,
@@ -71,4 +77,17 @@ app.post("/events", (req, res) => {
 
 // Port
 const port = 4003;
-app.listen(port, () => console.log(`Server is listening on ${port}`));
+app.listen(port, async () => {
+  console.log(`Server is listening on ${port}`);
+
+  try {
+    const res = await axios.get("http://localhost:4005/events");
+
+    for (let event of res.data) {
+      console.log("Processing Event: ", event.type);
+      handleEvent(event.type, event.data);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+});
