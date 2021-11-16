@@ -6,7 +6,7 @@ const CommentCreate = ({ postId }) => {
 
   const sendComment = () => {
     axios
-      .post(`http://localhost:4002/posts/${postId}/comments`, {
+      .post(`http://posts.com/posts/${postId}/comments`, {
         content: comment,
       })
       .catch((err) => console.error(err));

@@ -6,7 +6,7 @@ const PostCreate = () => {
 
   const sendData = (e) => {
     axios
-      .post("http://localhost:4001/posts", {
+      .post("http://posts.com/posts/create", {
         content: postTitle,
       })
       .catch((err) => console.log(err));

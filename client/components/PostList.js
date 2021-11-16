@@ -8,7 +8,7 @@ const PostList = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4003/posts")
+      .get("http://posts.com/posts")
       .then((res) => setPosts(res.data.data))
       .catch((err) => console.log(err));
   }, []);

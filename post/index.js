@@ -22,7 +22,7 @@ let posts = {};
 
 // Routes
 
-app.post("/posts", (req, res) => {
+app.post("/posts/create", (req, res) => {
   const postId = crypto.randomBytes(4).toString("hex"); //Generate random Id
   posts[postId] = {
     id: postId,

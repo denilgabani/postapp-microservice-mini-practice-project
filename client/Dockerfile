@@ -2,6 +2,9 @@
 
 FROM node:16-alpine
 
+# Setting environment variable 
+ENV CI=true
+
 # Set Workdir
 
 WORKDIR /app
