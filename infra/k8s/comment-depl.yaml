@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comment-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: comment
+  template:
+    metadata:
+      labels:
+        app: comment
+    spec:
+      containers:
+        - name: comment
+          image: denilgabani/comment
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comment-cluster-ip
+spec:
+  type: ClusterIP
+  selector:
+    app: comment
+  ports:
+    - name: comment
+      port: 6002
+      targetPort: 4002
