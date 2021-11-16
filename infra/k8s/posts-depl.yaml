@@ -15,3 +15,17 @@ spec:
       containers:
         - name: posts
           image: denilgabani/post
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts-cluster-ip
+spec:
+  type: ClusterIP
+  selector:
+    app: posts
+  ports:
+    - name: posts
+      port: 6001
+      targetPort: 4001
