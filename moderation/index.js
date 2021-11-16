@@ -28,7 +28,7 @@ const handleEvent = (type, data) => {
     console.log(status);
 
     axios
-      .post("http://localhost:4005/events", {
+      .post("http://event-bus-cluster-ip:6005/events", {
         type: "CommentModerated",
         data: {
           postId,
@@ -55,7 +55,7 @@ app.listen(port, async () => {
   console.log(`Server is listening on ${port}`);
 
   try {
-    const res = await axios.get("http://localhost:4005/events");
+    const res = await axios.get("http://event-bus-cluster-ip:6005/events");
 
     for (let event of res.data) {
       console.log("Processing Event: ", event.type);

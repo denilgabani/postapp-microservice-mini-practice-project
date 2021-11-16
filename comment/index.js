@@ -40,7 +40,7 @@ app.post("/posts/:postId/comments", (req, res) => {
   commentsByPostId[postId] = commentsArr;
 
   axios
-    .post("http://localhost:4005/events", {
+    .post("http://event-bus-cluster-ip:6005/events", {
       type: "CommentCreated",
       data: {
         postId,
@@ -82,7 +82,7 @@ app.post("/events", (req, res) => {
     matchedComment.comment = comment;
 
     axios
-      .post("http://localhost:4005/events", {
+      .post("http://event-bus-cluster-ip:6005/events", {
         type: "CommentUpdated",
         data: {
           postId,
