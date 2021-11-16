@@ -19,17 +19,17 @@ app.post("/events", (req, res) => {
   events.push({ type, data }); //Store every event that occured
 
   axios
-    .post("http://localhost:4001/events", { type, data })
+    .post("http://posts-cluster-ip:6001/events", { type, data })
     .catch((err) => console.error(err));
-  axios
-    .post("http://localhost:4002/events", { type, data })
-    .catch((err) => console.error(err));
-  axios
-    .post("http://localhost:4003/events", { type, data })
-    .catch((err) => console.error(err));
-  axios
-    .post("http://localhost:4004/events", { type, data })
-    .catch((err) => console.error(err));
+  // axios
+  //   .post("http://localhost:4002/events", { type, data })
+  //   .catch((err) => console.error(err));
+  // axios
+  //   .post("http://localhost:4003/events", { type, data })
+  //   .catch((err) => console.error(err));
+  // axios
+  //   .post("http://localhost:4004/events", { type, data })
+  //   .catch((err) => console.error(err));
 
   res.status(200).send({
     success: true,

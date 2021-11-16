@@ -30,7 +30,7 @@ app.post("/posts", (req, res) => {
   };
 
   axios
-    .post("http://localhost:4005/events", {
+    .post("http://event-bus-cluster-ip:6005/events", {
       type: "PostCreated",
       data: { id: postId, title: req.body.content },
     })
