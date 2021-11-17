@@ -15,7 +15,7 @@ const PostCreate = () => {
 
   return (
     <div>
-      <h3>Create Post</h3>
+      <h3>Create Post !!!</h3>
       <div className="flex-col">
         <label htmlFor="createpost">Title</label>
         <input
